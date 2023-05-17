@@ -1,7 +1,5 @@
 package com.ll.rest_api.boundedContext.member.controller;
 
-
-import com.ll.rest_api.boundedContext.member.entity.Member;
 import com.ll.rest_api.boundedContext.member.service.MemberService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -13,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.net.http.HttpResponse;
-
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -23,6 +19,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class MemberController {
     private final MemberService memberService;
 
+    // DTO 형태 -> Getter, Setter 를 포함 (setter 를 자동 생성 하기 때문에 모든 상황에 적합하진 않음)
     @Data
     public static class LoginRequest {
         @NotBlank
@@ -31,11 +28,11 @@ public class MemberController {
         private String password;
     }
 
-
     @PostMapping("/login")
-    public Member login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse resp) {
-        resp.addHeader("Authentication", "JWT 토큰");
+    public String login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse resp) {
+        String accessToken = memberService.genAccessToken(loginRequest.getUsername(), loginRequest.getPassword());
+        resp.addHeader("Authentication", accessToken);
 
-        return memberService.findByUsername(loginRequest.getUsername()).orElse(null);
+        return "응답 본문";
     }
 }
