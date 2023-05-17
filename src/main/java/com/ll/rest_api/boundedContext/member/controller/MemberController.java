@@ -33,7 +33,9 @@ public class MemberController {
 
 
     @PostMapping("/login")
-    public Member login(@Valid @RequestBody LoginRequest loginRequest) {
+    public Member login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse resp) {
+        resp.addHeader("Authentication", "JWT 토큰");
+
         return memberService.findByUsername(loginRequest.getUsername()).orElse(null);
     }
 }
