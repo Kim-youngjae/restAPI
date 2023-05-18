@@ -48,6 +48,7 @@ public class ApiV1MemberController {
     public static class MeResponse {
         private final Member member;
     }
+
     // consumes = ALL_VALUE -> 나는 딱히 JSON 을 입력 받기를 고집하지 않겠다.
     @GetMapping(value = "/me", consumes = ALL_VALUE)
     public RsData<MeResponse> me() {
