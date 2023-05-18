@@ -1,10 +1,13 @@
 package com.ll.rest_api.boundedContext.member.controller;
 
+import com.ll.rest_api.base.rsData.RsData;
 import com.ll.rest_api.boundedContext.member.service.MemberService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,8 +18,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/member", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-public class MemberController {
+@RequestMapping(value = "/api/v1/member", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+public class ApiV1MemberController {
     private final MemberService memberService;
 
     // DTO 형태 -> Getter, Setter 를 포함 (setter 를 자동 생성 하기 때문에 모든 상황에 적합하진 않음)
@@ -28,11 +31,16 @@ public class MemberController {
         private String password;
     }
 
-    @PostMapping("/login")
-    public String login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse resp) {
-        String accessToken = memberService.genAccessToken(loginRequest.getUsername(), loginRequest.getPassword());
-        resp.addHeader("Authentication", accessToken);
+    @AllArgsConstructor
+    @Getter
+    public static class LoginResponse {
+        private final String accessToken;
+    }
 
-        return "응답 본문";
+    @PostMapping("/login")
+    public RsData<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse resp) {
+        String accessToken = memberService.genAccessToken(loginRequest.getUsername(), loginRequest.getPassword());
+
+        return RsData.of("S-1", "토큰이 생성되었습니다.", new LoginResponse(accessToken));
     }
 }
