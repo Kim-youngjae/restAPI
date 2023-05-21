@@ -23,7 +23,7 @@ import java.util.Map;
 @SuperBuilder
 @ToString(callSuper = true)
 public class Member extends BaseEntity {
-    @Column(unique = true)
+    @Column(unique = true) // unique 한 id 로 구분 지어지기 때문에 검색 시 속도가 빠르다.
     private String username;
     @JsonIgnore
     private String password;
